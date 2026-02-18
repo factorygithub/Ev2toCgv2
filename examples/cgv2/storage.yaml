@@ -1,0 +1,40 @@
+apiVersion: cgv2/v1
+kind: DeploymentSpecification
+metadata:
+  name: ev2-deployment
+  createdAt: '2026-02-18T13:16:57.531821Z'
+  description: Sample Ev2 deployment specification for a storage account
+spec:
+  parameters:
+    storageAccountName:
+      type: string
+      description: Name of the storage account
+    location:
+      type: string
+      description: Location for the storage account
+      default: westus2
+    sku:
+      type: string
+      description: Storage account SKU
+      default: Standard_LRS
+  variables:
+    storageAccountType: '[parameters(''sku'')]'
+  resources:
+  - name: '[parameters(''storageAccountName'')]'
+    type: Microsoft.Storage/storageAccounts
+    properties:
+      accessTier: Hot
+      supportsHttpsTrafficOnly: true
+      minimumTlsVersion: TLS1_2
+    location: '[parameters(''location'')]'
+    tags:
+      environment: production
+    apiVersion: '2021-09-01'
+  deployment:
+    strategy: blue-green
+    regions:
+    - westus2
+    - eastus2
+    healthCheck:
+      enabled: true
+      interval: 60

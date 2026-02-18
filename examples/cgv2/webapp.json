@@ -1,0 +1,76 @@
+{
+  "apiVersion": "cgv2/v1",
+  "kind": "DeploymentSpecification",
+  "metadata": {
+    "name": "ev2-deployment",
+    "createdAt": "2026-02-18T13:16:49.369946Z",
+    "description": "Sample Ev2 deployment specification for a web application"
+  },
+  "spec": {
+    "parameters": {
+      "location": {
+        "type": "string",
+        "description": "Location for all resources",
+        "default": "westus2"
+      },
+      "appServicePlanName": {
+        "type": "string",
+        "description": "Name of the App Service Plan",
+        "default": "myAppServicePlan"
+      },
+      "webAppName": {
+        "type": "string",
+        "description": "Name of the Web App"
+      }
+    },
+    "variables": {
+      "appServicePlanId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+      "resourceGroupName": "[resourceGroup().name]"
+    },
+    "resources": [
+      {
+        "name": "[parameters('appServicePlanName')]",
+        "type": "Microsoft.Web/serverfarms",
+        "properties": {
+          "reserved": false
+        },
+        "location": "[parameters('location')]",
+        "apiVersion": "2021-02-01"
+      },
+      {
+        "name": "[parameters('webAppName')]",
+        "type": "Microsoft.Web/sites",
+        "properties": {
+          "serverFarmId": "[variables('appServicePlanId')]",
+          "httpsOnly": true,
+          "siteConfig": {
+            "minTlsVersion": "1.2"
+          }
+        },
+        "location": "[parameters('location')]",
+        "tags": {
+          "environment": "production",
+          "project": "sample-app"
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+        ],
+        "apiVersion": "2021-02-01"
+      }
+    ],
+    "deployment": {
+      "strategy": "rolling",
+      "regions": [
+        "westus2",
+        "eastus2",
+        "northeurope"
+      ],
+      "healthCheck": {
+        "endpoint": "/health",
+        "interval": 30,
+        "timeout": 10,
+        "unhealthyThreshold": 3
+      }
+    }
+  }
+}

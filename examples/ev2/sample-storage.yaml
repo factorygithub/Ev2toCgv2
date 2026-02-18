@@ -1,0 +1,46 @@
+$schema: "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
+contentVersion: "1.0.0.0"
+description: "Sample Ev2 deployment specification for a storage account"
+
+parameters:
+  storageAccountName:
+    type: string
+    metadata:
+      description: "Name of the storage account"
+  location:
+    type: string
+    defaultValue: "westus2"
+    metadata:
+      description: "Location for the storage account"
+  sku:
+    type: string
+    defaultValue: "Standard_LRS"
+    metadata:
+      description: "Storage account SKU"
+
+variables:
+  storageAccountType: "[parameters('sku')]"
+
+resources:
+  - type: "Microsoft.Storage/storageAccounts"
+    apiVersion: "2021-09-01"
+    name: "[parameters('storageAccountName')]"
+    location: "[parameters('location')]"
+    sku:
+      name: "[variables('storageAccountType')]"
+    kind: "StorageV2"
+    properties:
+      accessTier: "Hot"
+      supportsHttpsTrafficOnly: true
+      minimumTlsVersion: "TLS1_2"
+    tags:
+      environment: "production"
+
+rolloutSpec:
+  strategy: "blue-green"
+  targetRegions:
+    - "westus2"
+    - "eastus2"
+  healthCheck:
+    enabled: true
+    interval: 60
