@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "description": "Sample Ev2 deployment specification for a web application",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "westus2",
+      "metadata": {
+        "description": "Location for all resources"
+      }
+    },
+    "appServicePlanName": {
+      "type": "string",
+      "defaultValue": "myAppServicePlan",
+      "metadata": {
+        "description": "Name of the App Service Plan"
+      }
+    },
+    "webAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Web App"
+      }
+    }
+  },
+  "variables": {
+    "appServicePlanId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+    "resourceGroupName": "[resourceGroup().name]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('appServicePlanName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "B1",
+        "tier": "Basic",
+        "size": "B1",
+        "family": "B",
+        "capacity": 1
+      },
+      "properties": {
+        "reserved": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('webAppName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+      ],
+      "properties": {
+        "serverFarmId": "[variables('appServicePlanId')]",
+        "httpsOnly": true,
+        "siteConfig": {
+          "minTlsVersion": "1.2"
+        }
+      },
+      "tags": {
+        "environment": "production",
+        "project": "sample-app"
+      }
+    }
+  ],
+  "rolloutSpec": {
+    "strategy": "rolling",
+    "targetRegions": [
+      "westus2",
+      "eastus2",
+      "northeurope"
+    ],
+    "healthCheck": {
+      "endpoint": "/health",
+      "interval": 30,
+      "timeout": 10,
+      "unhealthyThreshold": 3
+    }
+  }
+}
