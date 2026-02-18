@@ -1,0 +1,72 @@
+# Build outputs
+bin/
+obj/
+out/
+*.dll
+*.exe
+*.pdb
+
+# ConfigGen generated manifests (optional - decide if you want to commit these)
+# ConfigurationGeneration/Manifests/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.sln
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Build artifacts
+artifacts/
+_build/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.swp
+*~
+
+# Azure artifacts
+*.publishsettings
+
+# Local development
+appsettings.Development.json
+launchSettings.json
+local.settings.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
