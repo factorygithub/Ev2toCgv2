@@ -1,0 +1,81 @@
+{
+  "$schema": "https://ev2schema.azure.net/schemas/2020-01-01/serviceModel.json",
+  "contentVersion": "1.0.0.0",
+  "serviceMetadata": {
+    "serviceGroup": "MyAzureService",
+    "environment": "Production"
+  },
+  "serviceResourceGroupDefinitions": [
+    {
+      "name": "MyAzureService-eastus-rg",
+      "location": "eastus",
+      "azureResourceGroupName": "MyAzureService-eastus-rg",
+      "subscriptionId": "12345678-1234-1234-1234-123456789012",
+      "serviceResourceDefinitions": [
+        {
+          "name": "StorageAccount-eastus",
+          "armTemplatePath": "Templates/storage.json",
+          "armParametersPath": "Parameters/storage.eastus.parameters.json",
+          "composedOf": {
+            "armDeployment": {
+              "templatePath": "Templates/storage.json",
+              "parametersPath": "Parameters/storage.eastus.parameters.json"
+            }
+          }
+        },
+        {
+          "name": "AKS-eastus",
+          "armTemplatePath": "Templates/aks.json",
+          "armParametersPath": "Parameters/aks.eastus.parameters.json",
+          "composedOf": {
+            "armDeployment": {
+              "templatePath": "Templates/aks.json",
+              "parametersPath": "Parameters/aks.eastus.parameters.json"
+            }
+          }
+        },
+        {
+          "name": "EventHub-eastus",
+          "armTemplatePath": "Templates/eventhub.json",
+          "armParametersPath": "Parameters/eventhub.eastus.parameters.json",
+          "composedOf": {
+            "armDeployment": {
+              "templatePath": "Templates/eventhub.json",
+              "parametersPath": "Parameters/eventhub.eastus.parameters.json"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "MyAzureService-westus2-rg",
+      "location": "westus2",
+      "azureResourceGroupName": "MyAzureService-westus2-rg",
+      "subscriptionId": "12345678-1234-1234-1234-123456789012",
+      "serviceResourceDefinitions": [
+        {
+          "name": "StorageAccount-westus2",
+          "armTemplatePath": "Templates/storage.json",
+          "armParametersPath": "Parameters/storage.westus2.parameters.json",
+          "composedOf": {
+            "armDeployment": {
+              "templatePath": "Templates/storage.json",
+              "parametersPath": "Parameters/storage.westus2.parameters.json"
+            }
+          }
+        },
+        {
+          "name": "AKS-westus2",
+          "armTemplatePath": "Templates/aks.json",
+          "armParametersPath": "Parameters/aks.westus2.parameters.json",
+          "composedOf": {
+            "armDeployment": {
+              "templatePath": "Templates/aks.json",
+              "parametersPath": "Parameters/aks.westus2.parameters.json"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

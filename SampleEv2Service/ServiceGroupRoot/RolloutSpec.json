@@ -1,0 +1,51 @@
+{
+  "$schema": "https://ev2schema.azure.net/schemas/2020-01-01/rolloutSpec.json",
+  "contentVersion": "1.0.0.0",
+  "rolloutMetadata": {
+    "serviceModelPath": "ServiceModel.json",
+    "name": "Production-Rollout",
+    "rolloutType": "Major"
+  },
+  "orchestratedSteps": [
+    {
+      "name": "Region1-EastUS",
+      "targetType": "ServiceResourceGroupDefinition",
+      "targetName": "MyAzureService-eastus-rg",
+      "dependsOn": [],
+      "actions": [
+        {
+          "actionType": "ArmDeployment",
+          "actionName": "Deploy-StorageAccount-eastus"
+        },
+        {
+          "actionType": "ArmDeployment",
+          "actionName": "Deploy-AKS-eastus",
+          "dependsOn": ["Deploy-StorageAccount-eastus"]
+        },
+        {
+          "actionType": "ArmDeployment",
+          "actionName": "Deploy-EventHub-eastus",
+          "dependsOn": ["Deploy-StorageAccount-eastus"]
+        }
+      ]
+    },
+    {
+      "name": "Region2-WestUS2",
+      "targetType": "ServiceResourceGroupDefinition",
+      "targetName": "MyAzureService-westus2-rg",
+      "dependsOn": ["Region1-EastUS"],
+      "waitDuration": "PT2H",
+      "actions": [
+        {
+          "actionType": "ArmDeployment",
+          "actionName": "Deploy-StorageAccount-westus2"
+        },
+        {
+          "actionType": "ArmDeployment",
+          "actionName": "Deploy-AKS-westus2",
+          "dependsOn": ["Deploy-StorageAccount-westus2"]
+        }
+      ]
+    }
+  ]
+}
