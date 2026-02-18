@@ -86,8 +86,9 @@ class TestEv2ToCgv2Converter(unittest.TestCase):
             json.dump(self.sample_ev2_data, f)
             input_path = f.name
 
-        # Create temporary output path
-        output_path = tempfile.mktemp(suffix='.json')
+        # Create temporary output file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            output_path = f.name
 
         try:
             result = self.converter.convert_file(input_path, output_path, 'json')
